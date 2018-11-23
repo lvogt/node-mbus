@@ -245,14 +245,12 @@ public:
         uv_rwlock_wrlock(lock);
 
         mbus_frame reply;
-        mbus_frame_data reply_data;
         char error[100];
         int address;
         int secondary_selected = 0;
         int request_frame_res;
 
         memset((void *)&reply, 0, sizeof(mbus_frame));
-        memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
 
         if (init_slaves(handle) == 0)
         {
@@ -312,7 +310,7 @@ public:
             SetErrorMessage(error);
 
             // manual free
-            mbus_frame_free(reply.next);
+            mbus_frame_free((mbus_frame*)reply.next);
 
             return;
         }
@@ -326,14 +324,14 @@ public:
             SetErrorMessage(error);
 
             // manual free
-			mbus_frame_free(reply.next);
+			mbus_frame_free((mbus_frame*)reply.next);
 
             uv_rwlock_wrunlock(lock);
             return;
         }
 
         // manual free
-        mbus_frame_free(reply.next)
+        mbus_frame_free((mbus_frame*)reply.next);
 
         uv_rwlock_wrunlock(lock);
     }
